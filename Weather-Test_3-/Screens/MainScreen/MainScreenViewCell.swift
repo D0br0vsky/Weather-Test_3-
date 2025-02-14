@@ -3,10 +3,11 @@ import AVKit
 final class MainScreenViewCell: UICollectionViewCell {
     static let id = "MainScreenViewCell"
     private var model: Model?
-    private var playerLayer: AVPlayerLayer?
     private var player: AVQueuePlayer?
+    private var playerItem: AVPlayerItem?
     private var looper: AVPlayerLooper?
-    
+    private var playerLayer = AVPlayerLayer()
+
     struct Model {
         let name: String
         let country: String
@@ -23,50 +24,16 @@ final class MainScreenViewCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .black.withAlphaComponent(0.4)
         view.layer.cornerRadius = 20
+        view.clipsToBounds = true
         return view
     }()
     
-    private lazy var cityName: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.textColor = .white
-        return label
-    }()
-    
-    private lazy var countryName: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .white
-        return label
-    }()
-
-    private lazy var temperature: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 52, weight: .light)
-        label.textColor = .white
-        return label
-    }()
-
-    private lazy var status: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .white.withAlphaComponent(0.9)
-        return label
-    }()
-
-    private lazy var tempMin: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white.withAlphaComponent(0.8)
-        return label
-    }()
-
-    private lazy var tempMax: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white.withAlphaComponent(0.8)
-        return label
-    }()
+    private lazy var cityName: UILabel = createLabel(fontSize: 24, weight: .bold)
+    private lazy var countryName: UILabel = createLabel(fontSize: 14, weight: .medium)
+    private lazy var temperature: UILabel = createLabel(fontSize: 52, weight: .light)
+    private lazy var status: UILabel = createLabel(fontSize: 16, weight: .regular, alpha: 0.9)
+    private lazy var tempMin: UILabel = createLabel(fontSize: 16, weight: .medium, alpha: 0.8)
+    private lazy var tempMax: UILabel = createLabel(fontSize: 16, weight: .medium, alpha: 0.8)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -78,8 +45,10 @@ final class MainScreenViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Video Playback
     func playVideo(named fileName: String) {
         guard let asset = NSDataAsset(name: fileName) else {
+            print("Asset not found for \(fileName)")
             return
         }
 
@@ -92,25 +61,31 @@ final class MainScreenViewCell: UICollectionViewCell {
 
             player = AVQueuePlayer(playerItem: playerItem)
             looper = AVPlayerLooper(player: player!, templateItem: playerItem)
-
-            playerLayer?.player = player
+            
+            playerLayer.player = player
             player?.play()
         } catch {
-            print("Video download error")
+            print("Video loading error: \(error.localizedDescription)")
         }
     }
 
+    // MARK: - Update Cell Content
     func update(model: Model) {
         self.model = model
-        cityName.text = "\(model.name)"
-        countryName.text = "\(model.country)"
-        temperature.text = "\(model.temp)"
-        status.text = "\(model.description)"
+        cityName.text = model.name
+        countryName.text = model.country
+        temperature.text = model.temp
+        status.text = model.description
         tempMin.text = "Min.: \(model.tempMin)"
-        tempMax.text = "Max.: \(model.tempMax),"
-        playVideo(named: model.videoFileName)
+        tempMax.text = "Max.: \(model.tempMax)"
+        
+        // Убираем прерывания видео при обновлении, если видео одинаковое
+        if playerLayer.player == nil || model.videoFileName != self.model?.videoFileName {
+            playVideo(named: model.videoFileName)
+        }
     }
-    
+
+    // MARK: - Reuse Handling
     override func prepareForReuse() {
         super.prepareForReuse()
         cityName.text = nil
@@ -120,45 +95,50 @@ final class MainScreenViewCell: UICollectionViewCell {
         tempMin.text = nil
         tempMax.text = nil
         player?.pause()
-        playerLayer?.player = nil
-        playerLayer?.removeFromSuperlayer()
-        playerLayer = nil
+        playerLayer.player = nil
+        looper = nil
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Растягиваем видео под весь basicShape
+        playerLayer.frame = basicShape.bounds
+        playerLayer.videoGravity = .resizeAspectFill
+    }
+
 }
 
 // MARK: - Setup Subviews and Constraints
 private extension MainScreenViewCell {
     func commonInit() {
-        setupSubviews()
-        setupConstraints()
-    }
-    
-    func setupSubviews() {
-        setupVideoLayer()
         contentView.addSubview(basicShape)
-        basicShape.addSubview(cityName)
-        basicShape.addSubview(countryName)
-        basicShape.addSubview(temperature)
-        basicShape.addSubview(status)
-        basicShape.addSubview(tempMin)
-        basicShape.addSubview(tempMax)
+        basicShape.layer.addSublayer(playerLayer)
+        
+        [cityName, countryName, temperature, status, tempMin, tempMax].forEach {
+            basicShape.addSubview($0)
+        }
+        
+        setupConstraints()
     }
     
     func setupConstraints() {
         basicShape.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            basicShape.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            basicShape.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            basicShape.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            basicShape.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
+        
         cityName.translatesAutoresizingMaskIntoConstraints = false
         countryName.translatesAutoresizingMaskIntoConstraints = false
         temperature.translatesAutoresizingMaskIntoConstraints = false
         status.translatesAutoresizingMaskIntoConstraints = false
         tempMin.translatesAutoresizingMaskIntoConstraints = false
         tempMax.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
-            basicShape.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            basicShape.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            basicShape.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            basicShape.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            
             cityName.topAnchor.constraint(equalTo: basicShape.topAnchor, constant: 10),
             cityName.leadingAnchor.constraint(equalTo: basicShape.leadingAnchor, constant: 15),
             
@@ -179,10 +159,10 @@ private extension MainScreenViewCell {
         ])
     }
     
-    func setupVideoLayer() {
-        playerLayer = AVPlayerLayer()
-        playerLayer?.videoGravity = .resizeAspectFill
-        playerLayer?.frame = contentView.bounds
-        contentView.layer.insertSublayer(playerLayer!, at: 0)
+    func createLabel(fontSize: CGFloat, weight: UIFont.Weight, alpha: CGFloat = 1.0) -> UILabel {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+        label.textColor = .white.withAlphaComponent(alpha)
+        return label
     }
 }

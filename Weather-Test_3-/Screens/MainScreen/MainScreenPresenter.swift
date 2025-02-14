@@ -15,7 +15,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     private let dataService: DataServiceProtocol
     private let weatherDataStorage: WeatherDataStorageProtocol
     
-    private var searchQuery: String = "Moscow"
+    private var searchQuery: String = ""
     
     init(coordinator: MainScreenCoordinator, dataLoader: DataLoaderProtocol, dataService: DataServiceProtocol, weatherDataStorage: WeatherDataStorageProtocol) {
         self.coordinator = coordinator
@@ -60,7 +60,7 @@ private extension MainScreenPresenter {
     }
     
     func updateUI() {
-        let videoFiles = ["",""]//["previouslyMorning", "day", "morning", "night"]
+        let videoFiles = ["previouslyMorning", "day", "morning", "night"]
         
         let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
             MainScreenViewCell.Model(
