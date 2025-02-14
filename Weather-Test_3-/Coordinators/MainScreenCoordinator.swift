@@ -12,6 +12,14 @@ final class MainScreenCoordinator: Coordinator {
     
     func showWeatherScreen(for cityModel: MainScreenViewCell.Model) {
         let weatherScreen = WeatherScreenFactory().make(city: cityModel)
-        customNavigationController.pushViewController(weatherScreen, animated: true)
+        weatherScreen.modalPresentationStyle = .pageSheet
+        weatherScreen.modalTransitionStyle = .coverVertical
+        
+        if let sheet = weatherScreen.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = false
+        }
+        
+        customNavigationController.present(weatherScreen, animated: true)
     }
 }
