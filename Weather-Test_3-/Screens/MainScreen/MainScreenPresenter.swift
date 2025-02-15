@@ -15,7 +15,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     private let dataService: DataServiceProtocol
     private let weatherDataStorage: WeatherDataStorageProtocol
     
-    private var searchQuery: String = ""
+    private var searchQuery: String = "Moscow"
     
     init(coordinator: MainScreenCoordinator, dataLoader: DataLoaderProtocol, dataService: DataServiceProtocol, weatherDataStorage: WeatherDataStorageProtocol) {
         self.coordinator = coordinator

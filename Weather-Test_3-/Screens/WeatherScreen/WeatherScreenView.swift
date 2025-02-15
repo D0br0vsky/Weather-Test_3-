@@ -1,8 +1,12 @@
-import UIKit
+import AVKit
 
 final class WeatherScreenView: UIView {
     typealias item = WeatherScreenViewCell.Model
-    
+
+    private var player: AVQueuePlayer?
+    private var playerLayer = AVPlayerLayer()
+    private var looper: AVPlayerLooper?
+
     struct ModelView {
         let name: String
         let country: String
@@ -21,9 +25,18 @@ final class WeatherScreenView: UIView {
     private var model: Model?
     private var modelView: ModelView?
     
+    private lazy var blurView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .light)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.alpha = 0.6
+        view.layer.cornerRadius = 20
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
     private lazy var cityName: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 34, weight: .medium)
         label.textColor = .white
         return label
     }()
@@ -37,33 +50,35 @@ final class WeatherScreenView: UIView {
     
     private lazy var temperature: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 62, weight: .light)
+        label.font = UIFont.systemFont(ofSize: 72, weight: .thin)
         label.textColor = .white
         return label
     }()
     
     private lazy var status: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .white.withAlphaComponent(0.9)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .white.withAlphaComponent(0.6)
         return label
     }()
     
     private lazy var tempMaxMin: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white.withAlphaComponent(0.8)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .white
         return label
     }()
     
     private lazy var tableView: UITableView  = {
         let tableView = UITableView()
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .clear
+        tableView.layer.cornerRadius = 20
+        tableView.layer.masksToBounds = true
+        tableView.separatorStyle = .none
         tableView.dataSource = self
         tableView.delegate = self
         tableView.alwaysBounceVertical = true
         tableView.prefetchDataSource = self
-        tableView.separatorStyle = .singleLine
         tableView.register(WeatherScreenViewCell.self, forCellReuseIdentifier: WeatherScreenViewCell.id)
         return tableView
     }()
@@ -82,12 +97,40 @@ final class WeatherScreenView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func playVideo(named fileName: String) {
+        guard let asset = NSDataAsset(name: fileName) else {
+            print("Asset not found for \(fileName)")
+            return
+        }
+
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp4")
+
+        do {
+            try asset.data.write(to: tempURL)
+            let asset = AVAsset(url: tempURL)
+            let playerItem = AVPlayerItem(asset: asset)
+
+            player = AVQueuePlayer(playerItem: playerItem)
+            looper = AVPlayerLooper(player: player!, templateItem: playerItem)
+
+            playerLayer.player = player
+            playerLayer.videoGravity = .resizeAspectFill
+            playerLayer.frame = bounds
+            layer.insertSublayer(playerLayer, at: 0)
+
+            player?.play()
+        } catch {
+            print("Video loading error: \(error.localizedDescription)")
+        }
+    }
+    
     func updateHeader(modelView: ModelView) {
-        cityName.text = "\(modelView.name)"
-        countryName.text = "\(modelView.country)"
-        temperature.text = "\(modelView.temp)"
+        cityName.text = modelView.name
+        countryName.text = modelView.country
+        temperature.text = modelView.temp
         status.text = modelView.description
         tempMaxMin.text = "Min: \(modelView.tempMin), Max: \(modelView.tempMax)"
+        playVideo(named: modelView.videoFileName)
     }
 
     func updateTable(model: Model) {
@@ -95,7 +138,11 @@ final class WeatherScreenView: UIView {
         self.data = model.items
         tableView.reloadData()
     }
-
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = bounds
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -117,8 +164,9 @@ extension WeatherScreenView: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 extension WeatherScreenView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //<#code#>
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = .clear
+        cell.isOpaque = false
     }
 }
 
@@ -142,6 +190,7 @@ private extension WeatherScreenView {
         addSubview(temperature)
         addSubview(status)
         addSubview(tempMaxMin)
+        addSubview(blurView)
         addSubview(tableView)
     }
     
@@ -152,12 +201,13 @@ private extension WeatherScreenView {
         status.translatesAutoresizingMaskIntoConstraints = false
         tempMaxMin.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            cityName.topAnchor.constraint(equalTo: topAnchor, constant: 100),
+            cityName.topAnchor.constraint(equalTo: topAnchor, constant: 40),
             cityName.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            countryName.topAnchor.constraint(equalTo: cityName.bottomAnchor, constant: 5),
+            countryName.topAnchor.constraint(equalTo: cityName.bottomAnchor),
             countryName.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             temperature.topAnchor.constraint(equalTo: countryName.bottomAnchor, constant: 4),
@@ -169,7 +219,12 @@ private extension WeatherScreenView {
             tempMaxMin.topAnchor.constraint(equalTo: status.bottomAnchor, constant: 4),
             tempMaxMin.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            tableView.topAnchor.constraint(equalTo: tempMaxMin.bottomAnchor, constant: 20),
+            blurView.topAnchor.constraint(equalTo: tempMaxMin.bottomAnchor, constant: 40),
+            blurView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            blurView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            blurView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
+            
+            tableView.topAnchor.constraint(equalTo: tempMaxMin.bottomAnchor, constant: 40),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30)

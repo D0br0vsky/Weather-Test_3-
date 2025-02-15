@@ -45,7 +45,6 @@ final class MainScreenViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Video Playback
     func playVideo(named fileName: String) {
         guard let asset = NSDataAsset(name: fileName) else {
             print("Asset not found for \(fileName)")
@@ -69,7 +68,6 @@ final class MainScreenViewCell: UICollectionViewCell {
         }
     }
 
-    // MARK: - Update Cell Content
     func update(model: Model) {
         self.model = model
         cityName.text = model.name
@@ -79,13 +77,11 @@ final class MainScreenViewCell: UICollectionViewCell {
         tempMin.text = "Min.: \(model.tempMin)"
         tempMax.text = "Max.: \(model.tempMax)"
         
-        // Убираем прерывания видео при обновлении, если видео одинаковое
         if playerLayer.player == nil || model.videoFileName != self.model?.videoFileName {
             playVideo(named: model.videoFileName)
         }
     }
 
-    // MARK: - Reuse Handling
     override func prepareForReuse() {
         super.prepareForReuse()
         cityName.text = nil
@@ -102,7 +98,6 @@ final class MainScreenViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Растягиваем видео под весь basicShape
         playerLayer.frame = basicShape.bounds
         playerLayer.videoGravity = .resizeAspectFill
     }
