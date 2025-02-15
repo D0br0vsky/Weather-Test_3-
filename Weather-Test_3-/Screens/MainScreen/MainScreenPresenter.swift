@@ -15,7 +15,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     private let dataService: DataServiceProtocol
     private let weatherDataStorage: WeatherDataStorageProtocol
     
-    private var searchQuery: String = "Moscow"
+    private var searchQuery: String = ""
     
     init(coordinator: MainScreenCoordinator, dataLoader: DataLoaderProtocol, dataService: DataServiceProtocol, weatherDataStorage: WeatherDataStorageProtocol) {
         self.coordinator = coordinator
@@ -63,13 +63,11 @@ private extension MainScreenPresenter {
         let videoFiles = ["previouslyMorning", "day", "morning", "night"]
         
         let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
-            // Допустим, для главного экрана тебе нужен только первый день:
             let firstDay = city.weatherList.first
             
             return MainScreenViewCell.Model(
                 name: city.name,
                 country: city.country,
-                // Берём данные у firstDay, если есть
                 dateTime: firstDay?.dateTime ?? "no data",
                 temp: firstDay?.temp ?? "",
                 description: firstDay?.description ?? "",
@@ -77,8 +75,6 @@ private extension MainScreenPresenter {
                 tempMax: firstDay?.tempMax ?? "",
                 videoFileName: videoFiles[index % videoFiles.count],
                 icon: firstDay?.icon ?? .clearSkyDay,
-
-                // А здесь — массив всех 5 дней
                 weatherList: city.weatherList
             )
         }

@@ -83,7 +83,6 @@ private extension DataService {
         }
     }
 
-    
     func fetchWeather(lat: Double, lon: Double, completion: @escaping (Result<WeatherResponse, Error>) -> Void) {
         guard let request = apiEndpoint.makeRequestFindWeather(lat: lat, lon: lon) else {
             completion(.failure(NSError(domain: "Invalid request", code: 3)))

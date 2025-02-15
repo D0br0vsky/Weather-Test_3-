@@ -1,4 +1,4 @@
-// MARK: - DTO Weather Model
+// MARK: - Response Weather Model
 struct WeatherResponse: Codable {
     let list: [WeatherEntry]
     let city: CityInfo
@@ -70,7 +70,7 @@ struct CityInfo: Codable {
     let timezone: Int
 }
 
-// MARK: - DTO City Model
+// MARK: - Response City Model
 struct CityResponse: Codable {
     let name: String
     let lat: Double

@@ -1,40 +1,39 @@
+import Foundation
+
 protocol DataMappersProtocol: AnyObject {
     func mapToDomainModel(city: CityResponse, weather: WeatherResponse) -> CityWeatherModel
 }
 
 final class DataMappers: DataMappersProtocol {
     func mapToDomainModel(city: CityResponse, weather: WeatherResponse) -> CityWeatherModel {
-        // Берём первые 5 элементов (или сколько нужно)
-        let firstFiveEntries = Array(weather.list.prefix(5))
+        let groupedByDay = Dictionary(grouping: weather.list) { entry in
+            DateFormatterHelper.shared.formatYMD(from: DateFormatterHelper.shared.parseDate(from: entry.dateTime) ?? Date())
+        }
         
-        // Мапим каждый элемент в WeatherInfo
-        let weatherInfos: [WeatherInfo] = firstFiveEntries.map { entry in
-            let formattedWeekday = DateFormatterHelper.shared.formatToWeekday(from: entry.dateTime)
+        let sortedDays = groupedByDay.keys.sorted().prefix(5)
+        
+        let weatherInfos: [WeatherInfo] = sortedDays.compactMap { dayKey in
+            guard let entries = groupedByDay[dayKey], let firstEntry = entries.first else {
+                return nil
+            }
             
-            // roundedInt() — это твой экстеншен или метод для Double,
-            // который делает Int. Если у тебя там nil, не забудь обработать.
-            let temp = entry.main.temp.roundedInt()
-            let tempMin = entry.main.tempMin.roundedInt()
-            let tempMax = entry.main.tempMax.roundedInt()
-            
-            let iconModel = WeatherIconModels(rawValue: entry.weather.first?.icon ?? "") ?? .clearSkyDay
+            let avgMin = entries.map { $0.main.tempMin }.reduce(0, +) / Double(entries.count)
+            let avgMax = entries.map { $0.main.tempMax }.reduce(0, +) / Double(entries.count)
             
             return WeatherInfo(
-                temp: "\(temp)°",
-                description: entry.weather.first?.description ?? "no data",
-                dateTime: formattedWeekday,
-                tempMin: "\(tempMin)°",
-                tempMax: "\(tempMax)°",
-                icon: iconModel
+                temp: "\(firstEntry.main.temp.roundedInt())°",
+                description: firstEntry.weather.first?.description ?? "no data",
+                dateTime: DateFormatterHelper.shared.formatToWeekday(from: firstEntry.dateTime),
+                tempMin: "\(avgMin.roundedInt())°",
+                tempMax: "\(avgMax.roundedInt())°",
+                icon: WeatherIconModels(rawValue: firstEntry.weather.first?.icon ?? "") ?? .clearSkyDay
             )
         }
         
-        // Обрати внимание, что CityWeatherModel теперь должен хранить массив weatherList
         return CityWeatherModel(
             name: city.name,
             country: city.country.countryName,
             weatherList: weatherInfos
         )
     }
-
 }

@@ -105,10 +105,10 @@ private extension WeatherScreenViewCell {
         line.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -20),
+            stackView.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -10),
             
             iconStatus.widthAnchor.constraint(equalToConstant: 20),
             iconStatus.heightAnchor.constraint(equalToConstant: 20),

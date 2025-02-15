@@ -220,14 +220,14 @@ private extension WeatherScreenView {
             tempMaxMin.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             blurView.topAnchor.constraint(equalTo: tempMaxMin.bottomAnchor, constant: 40),
-            blurView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            blurView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            blurView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            blurView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
             blurView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
             
             tableView.topAnchor.constraint(equalTo: tempMaxMin.bottomAnchor, constant: 40),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30)
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -100)
         ])
     }
 }
