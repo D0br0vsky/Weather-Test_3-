@@ -63,17 +63,26 @@ private extension MainScreenPresenter {
         let videoFiles = ["previouslyMorning", "day", "morning", "night"]
         
         let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
-            MainScreenViewCell.Model(
-                name: city.name, country: city.country,
-                dateTime: city.weather.dateTime,
-                temp: city.weather.temp,
-                description: city.weather.description,
-                tempMin: city.weather.tempMin,
-                tempMax: city.weather.tempMax,
-                videoFileName: videoFiles[index % videoFiles.count], icon: city.weather.icon
+            // Допустим, для главного экрана тебе нужен только первый день:
+            let firstDay = city.weatherList.first
+            
+            return MainScreenViewCell.Model(
+                name: city.name,
+                country: city.country,
+                // Берём данные у firstDay, если есть
+                dateTime: firstDay?.dateTime ?? "no data",
+                temp: firstDay?.temp ?? "",
+                description: firstDay?.description ?? "",
+                tempMin: firstDay?.tempMin ?? "",
+                tempMax: firstDay?.tempMax ?? "",
+                videoFileName: videoFiles[index % videoFiles.count],
+                icon: firstDay?.icon ?? .clearSkyDay,
+
+                // А здесь — массив всех 5 дней
+                weatherList: city.weatherList
             )
         }
-        
+
         let viewModel = MainScreenView.Model(items: items)
         view?.update(model: viewModel)
     }

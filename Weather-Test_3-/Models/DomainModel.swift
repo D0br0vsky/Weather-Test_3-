@@ -1,7 +1,7 @@
 struct CityWeatherModel {
     let name: String
     let country: String
-    let weather: WeatherInfo
+    let weatherList: [WeatherInfo]
 }
 
 struct WeatherInfo {

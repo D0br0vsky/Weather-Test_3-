@@ -18,6 +18,7 @@ final class MainScreenViewCell: UICollectionViewCell {
         let tempMax: String
         let videoFileName: String
         let icon: WeatherIconModels
+        let weatherList: [WeatherInfo]
     }
     
     private lazy var basicShape: UIView = {

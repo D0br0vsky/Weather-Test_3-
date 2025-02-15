@@ -18,7 +18,6 @@ final class WeatherScreenPresenter: WeatherScreenPresenterProtocol {
 
 extension WeatherScreenPresenter {
     func CellDataUpdating() {
-        
         let headerModel = WeatherScreenView.ModelView(
             name: cityModel.name,
             country: cityModel.country,
@@ -29,14 +28,17 @@ extension WeatherScreenPresenter {
             videoFileName: cityModel.videoFileName
         )
         
-        let tableModel = WeatherScreenView.Model(
-            items: [
-                WeatherScreenViewCell.Model(dateTime: cityModel.dateTime, tempMin: cityModel.tempMin, tempMax: cityModel.tempMax, icon: cityModel.icon)
-            ]
-        )
-        
-        view?.updateHeader(modelView: headerModel)
+        let tableItems = cityModel.weatherList.map { weatherInfo in
+            WeatherScreenViewCell.Model(
+                dateTime: weatherInfo.dateTime,
+                tempMin: weatherInfo.tempMin,
+                tempMax: weatherInfo.tempMax,
+                icon: weatherInfo.icon
+            )
+        }
+        let tableModel = WeatherScreenView.Model(items: tableItems)
         view?.updateTable(model: tableModel)
+        view?.updateHeader(modelView: headerModel)
     }
 
 }
