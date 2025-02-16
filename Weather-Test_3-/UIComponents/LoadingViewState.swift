@@ -14,6 +14,7 @@ final class LoadingViewState: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
         commonInit()
     }
     
@@ -26,7 +27,6 @@ final class LoadingViewState: UIView {
 // MARK: - Setup Subviews and Constraints
 private extension LoadingViewState {
     func commonInit() {
-        backgroundColor = .white
         setupSubviews()
         setupConstraints()
     }

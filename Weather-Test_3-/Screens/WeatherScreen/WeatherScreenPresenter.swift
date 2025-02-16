@@ -1,3 +1,5 @@
+import Foundation
+
 protocol WeatherScreenPresenterProtocol: AnyObject {
     
 }
@@ -12,7 +14,9 @@ final class WeatherScreenPresenter: WeatherScreenPresenterProtocol {
     }
     
     func viewDidLoad() {
+        view?.setState(.loading)
         CellDataUpdating()
+        view?.setState(.content)
     }
 }
 
@@ -41,5 +45,4 @@ extension WeatherScreenPresenter {
         view?.updateTable(model: tableModel)
         view?.updateHeader(modelView: headerModel)
     }
-
 }

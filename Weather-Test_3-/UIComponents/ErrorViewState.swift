@@ -30,6 +30,7 @@ final class ErrorViewState: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
         commonInit()
     }
     

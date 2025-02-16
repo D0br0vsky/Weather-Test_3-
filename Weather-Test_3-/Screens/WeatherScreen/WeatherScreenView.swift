@@ -82,12 +82,12 @@ final class WeatherScreenView: UIView {
         return tableView
     }()
     
-    var presenter: WeatherScreenPresenterProtocol // над presenter подумать надо
+    var presenter: WeatherScreenPresenterProtocol
     
     init(presenter: WeatherScreenPresenterProtocol) {
         self.presenter = presenter
         super.init(frame: .zero)
-        backgroundColor = .black
+        backgroundColor = .white
         commonInit()
     }
     

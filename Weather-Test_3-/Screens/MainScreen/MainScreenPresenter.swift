@@ -12,20 +12,21 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     
     private let debouncer = CancellableExecutor(queue: .main)
     private let weatherDataStorage: WeatherDataStorageProtocol
+    private let searchDebouncer: SearchDebouncerProtocol
     
     private var searchQuery: String = ""
     
-    init(coordinator: MainScreenCoordinator, weatherDataStorage: WeatherDataStorageProtocol) {
+    init(coordinator: MainScreenCoordinator, weatherDataStorage: WeatherDataStorageProtocol, searchDebouncer: SearchDebouncerProtocol) {
         self.coordinator = coordinator
         self.weatherDataStorage = weatherDataStorage
+        self.searchDebouncer = searchDebouncer
     }
     
     func updateSearchQuery(_ query: String) {
         searchQuery = query
         
-        debouncer.execute(delay: .milliseconds(400)) { [weak self] isCancelled in
-            guard let self = self, !isCancelled.isCancelled else { return }
-            loadWeatherData()
+        searchDebouncer.debounce(query: query) { [weak self] _ in
+            self?.loadWeatherData()
         }
     }
     
@@ -34,6 +35,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     }
     
     func viewDidLoad() {
+        view?.setState(.content)
         loadWeatherData()
     }
 }
@@ -41,17 +43,26 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
 // MARK: - Private Methods
 private extension MainScreenPresenter {
     func loadWeatherData() {
-        weatherDataStorage.loadingWeatherData(searchQuery) { [weak self] result in
+        let trimmedQuery = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if trimmedQuery.isEmpty {
+            view?.setState(.empty)
+            return
+        }
+        
+        weatherDataStorage.loadingWeatherData(trimmedQuery) { [weak self] result in
             guard let self = self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.updateUI()
-                case .failure(let error):
-                        
-                    print(error)
-                    // потом показать экран с ошибкой поиска
+            switch result {
+            case .success:
+                view?.setState(.content)
+                let weatherData = self.weatherDataStorage.getWeatherData()
+                if weatherData.isEmpty {
+                    view?.setState(.notFound)
+                } else {
+                    updateUI()
                 }
+            case .failure(_):
+                view?.setState(.error)
             }
         }
     }
@@ -75,7 +86,7 @@ private extension MainScreenPresenter {
                 weatherList: city.weatherList
             )
         }
-
+        
         let viewModel = MainScreenView.Model(items: items)
         view?.update(model: viewModel)
     }

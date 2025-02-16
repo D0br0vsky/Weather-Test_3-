@@ -31,13 +31,55 @@ final class MainScreenViewCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var cityName: UILabel = createLabel(fontSize: 24, weight: .bold)
-    private lazy var countryName: UILabel = createLabel(fontSize: 14, weight: .medium)
-    private lazy var temperature: UILabel = createLabel(fontSize: 52, weight: .light)
-    private lazy var status: UILabel = createLabel(fontSize: 16, weight: .regular, alpha: 0.9)
-    private lazy var tempMin: UILabel = createLabel(fontSize: 16, weight: .medium, alpha: 0.8)
-    private lazy var tempMax: UILabel = createLabel(fontSize: 16, weight: .medium, alpha: 0.8)
-
+    private lazy var date: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var cityName: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var countryName: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var temperature: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 52, weight: .light)
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var status: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        label.textColor = .white.withAlphaComponent(0.9)
+        return label
+    }()
+    
+    private lazy var tempMin: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .white.withAlphaComponent(0.8)
+        return label
+    }()
+    
+    private lazy var tempMax: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .white.withAlphaComponent(0.8)
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -127,13 +169,6 @@ private extension MainScreenViewCell {
     
     func setupConstraints() {
         basicShape.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            basicShape.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            basicShape.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            basicShape.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            basicShape.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
-        ])
-        
         cityName.translatesAutoresizingMaskIntoConstraints = false
         countryName.translatesAutoresizingMaskIntoConstraints = false
         temperature.translatesAutoresizingMaskIntoConstraints = false
@@ -142,6 +177,11 @@ private extension MainScreenViewCell {
         tempMax.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
+            basicShape.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            basicShape.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            basicShape.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            basicShape.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            
             cityName.topAnchor.constraint(equalTo: basicShape.topAnchor, constant: 10),
             cityName.leadingAnchor.constraint(equalTo: basicShape.leadingAnchor, constant: 15),
             

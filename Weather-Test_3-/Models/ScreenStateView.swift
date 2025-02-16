@@ -52,7 +52,7 @@ extension ScreenStateView: ScreenStateViewProtocol {
             bringSubviewToFront(errorView)
         case .empty:
             emptyView.isHidden = false
-            isUserInteractionEnabled = false
+            isUserInteractionEnabled = true
             bringSubviewToFront(emptyView)
         case .notFound:
             notFoundView.isHidden = false
@@ -102,7 +102,7 @@ private extension ScreenStateView {
             errorView.trailingAnchor.constraint(equalTo: trailingAnchor),
             errorView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            loadingView.topAnchor.constraint(equalTo: topAnchor, constant: 145),
+            loadingView.topAnchor.constraint(equalTo: topAnchor),
             loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
             loadingView.trailingAnchor.constraint(equalTo: trailingAnchor),
             loadingView.bottomAnchor.constraint(equalTo: bottomAnchor),
