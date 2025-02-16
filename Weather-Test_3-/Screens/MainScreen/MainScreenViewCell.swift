@@ -1,7 +1,9 @@
 import AVKit
 
 final class MainScreenViewCell: UICollectionViewCell {
+    
     static let id = "MainScreenViewCell"
+    
     private var model: Model?
     private var player: AVQueuePlayer?
     private var playerItem: AVPlayerItem?
@@ -47,26 +49,31 @@ final class MainScreenViewCell: UICollectionViewCell {
     }
 
     func playVideo(named fileName: String) {
-        guard let asset = NSDataAsset(name: fileName) else {
-            print("Asset not found for \(fileName)")
-            return
-        }
-
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp4")
-
-        do {
-            try asset.data.write(to: tempURL)
-            let asset = AVAsset(url: tempURL)
-            let playerItem = AVPlayerItem(asset: asset)
-
-            player = AVQueuePlayer(playerItem: playerItem)
-            looper = AVPlayerLooper(player: player!, templateItem: playerItem)
+        if let cachedURL = VideoCacheManager.shared.cachedURL(for: fileName) {
+            createAndPlayVideo(from: cachedURL)
+        } else {
+            guard let asset = NSDataAsset(name: fileName) else {
+                print("Asset not found for \(fileName)")
+                return
+            }
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp4")
             
-            playerLayer.player = player
-            player?.play()
-        } catch {
-            print("Video loading error: \(error.localizedDescription)") // тут убрать принт и использовать какой-то (Logger или свой механизм логирования)
+            do {
+                try asset.data.write(to: tempURL)
+                createAndPlayVideo(from: tempURL)
+            } catch {
+                print("Video loading error: \(error.localizedDescription)")
+            }
         }
+    }
+
+    func createAndPlayVideo(from fileURL: URL) {
+        let asset = AVAsset(url: fileURL)
+        let playerItem = AVPlayerItem(asset: asset)
+        player = AVQueuePlayer(playerItem: playerItem)
+        looper = AVPlayerLooper(player: player!, templateItem: playerItem)
+        playerLayer.player = player
+        player?.play()
     }
 
     func update(model: Model) {
