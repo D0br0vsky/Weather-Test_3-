@@ -65,7 +65,7 @@ final class MainScreenViewCell: UICollectionViewCell {
             playerLayer.player = player
             player?.play()
         } catch {
-            print("Video loading error: \(error.localizedDescription)")
+            print("Video loading error: \(error.localizedDescription)") // тут убрать принт и использовать какой-то (Logger или свой механизм логирования)
         }
     }
 

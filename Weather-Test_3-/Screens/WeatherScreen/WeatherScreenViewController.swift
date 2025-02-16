@@ -2,7 +2,7 @@ import UIKit
 
 protocol WeatherScreenViewControllerProtocol: AnyObject {
     func updateTable(model: WeatherScreenView.Model)
-    func updateHeader(modelView: WeatherScreenView.ModelView)
+    func updateHeader(modelView: WeatherScreenView.HeaderModel)
 }
 
 final class WeatherScreenViewController: UIViewController {
@@ -35,7 +35,7 @@ extension WeatherScreenViewController: WeatherScreenViewControllerProtocol {
         customView.updateTable(model: model)
     }
     
-    func updateHeader(modelView: WeatherScreenView.ModelView) {
+    func updateHeader(modelView: WeatherScreenView.HeaderModel) {
         customView.updateHeader(modelView: modelView)
     }
 }

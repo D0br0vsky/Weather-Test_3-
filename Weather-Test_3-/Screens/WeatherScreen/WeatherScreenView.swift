@@ -7,7 +7,7 @@ final class WeatherScreenView: UIView {
     private var playerLayer = AVPlayerLayer()
     private var looper: AVPlayerLooper?
 
-    struct ModelView {
+    struct HeaderModel {
         let name: String
         let country: String
         let temp: String
@@ -23,7 +23,7 @@ final class WeatherScreenView: UIView {
     
     private var data: [WeatherScreenViewCell.Model] = []
     private var model: Model?
-    private var modelView: ModelView?
+    private var modelView: HeaderModel?
     
     private lazy var blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .light)
@@ -78,12 +78,11 @@ final class WeatherScreenView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.alwaysBounceVertical = true
-        tableView.prefetchDataSource = self
         tableView.register(WeatherScreenViewCell.self, forCellReuseIdentifier: WeatherScreenViewCell.id)
         return tableView
     }()
     
-    var presenter: WeatherScreenPresenterProtocol
+    var presenter: WeatherScreenPresenterProtocol // над presenter подумать надо
     
     init(presenter: WeatherScreenPresenterProtocol) {
         self.presenter = presenter
@@ -98,10 +97,7 @@ final class WeatherScreenView: UIView {
     }
     
     func playVideo(named fileName: String) {
-        guard let asset = NSDataAsset(name: fileName) else {
-            print("Asset not found for \(fileName)")
-            return
-        }
+        guard let asset = NSDataAsset(name: fileName) else { return }
 
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp4")
 
@@ -110,8 +106,10 @@ final class WeatherScreenView: UIView {
             let asset = AVAsset(url: tempURL)
             let playerItem = AVPlayerItem(asset: asset)
 
-            player = AVQueuePlayer(playerItem: playerItem)
-            looper = AVPlayerLooper(player: player!, templateItem: playerItem)
+            let queuePlayer = AVQueuePlayer(playerItem: playerItem)
+            self.player = queuePlayer
+
+            looper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
 
             playerLayer.player = player
             playerLayer.videoGravity = .resizeAspectFill
@@ -124,7 +122,7 @@ final class WeatherScreenView: UIView {
         }
     }
     
-    func updateHeader(modelView: ModelView) {
+    func updateHeader(modelView: HeaderModel) {
         cityName.text = modelView.name
         countryName.text = modelView.country
         temperature.text = modelView.temp
@@ -167,13 +165,6 @@ extension WeatherScreenView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = .clear
         cell.isOpaque = false
-    }
-}
-
-// MARK: - UITableViewDataSourcePrefetching
-extension WeatherScreenView: UITableViewDataSourcePrefetching {
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        //<#code#>
     }
 }
 

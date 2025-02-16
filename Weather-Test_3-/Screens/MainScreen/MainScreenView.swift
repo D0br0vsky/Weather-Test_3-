@@ -6,6 +6,8 @@ final class MainScreenView: UIView {
         let items: [item]
     }
     
+    private let videoPlayerManager: VideoPlayerManagerProtocol
+    
     private var dataCell: [MainScreenViewCell.Model] = []
     private var model: Model?
     private var playerLayer: AVPlayerLayer?
@@ -34,8 +36,6 @@ final class MainScreenView: UIView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 0
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 20, height: 140)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -48,8 +48,9 @@ final class MainScreenView: UIView {
 
     let presenter: MainScreenPresenterProtocol
     
-    init(presenter: MainScreenPresenterProtocol) {
+    init(presenter: MainScreenPresenterProtocol, videoPlayerManager: VideoPlayerManagerProtocol) {
         self.presenter = presenter
+        self.videoPlayerManager = videoPlayerManager
         super.init(frame: .zero)
         commonInit()
     }
@@ -69,7 +70,7 @@ final class MainScreenView: UIView {
 // MARK: - UISearchBarDelegate
 extension MainScreenView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        presenter.searchUpdate(searchText)
+        presenter.updateSearchQuery(searchText)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -115,7 +116,7 @@ private extension MainScreenView {
     }
 
     func playVideo(named fileName: String) {
-        player = VideoPlayerManager.shared.player(for: fileName)
+        player = videoPlayerManager.player(for: fileName)
         playerLayer?.player = player
         player?.play()
     }

@@ -1,12 +1,15 @@
 import AVKit
 
-final class VideoPlayerManager {
-    static let shared = VideoPlayerManager()
+protocol VideoPlayerManagerProtocol: AnyObject {
+    func player(for videoFileName: String) -> AVQueuePlayer
+}
+
+final class VideoPlayerManager: VideoPlayerManagerProtocol {
     
     private var players: [String: AVQueuePlayer] = [:]
     private var loopers: [String: AVPlayerLooper] = [:]
     
-    private init(){}
+    init(){}
 
     func player(for videoFileName: String) -> AVQueuePlayer {
         if let existingPlayer = players[videoFileName] {

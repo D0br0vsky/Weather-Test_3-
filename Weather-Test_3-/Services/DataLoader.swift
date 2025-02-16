@@ -6,7 +6,7 @@ protocol DataLoaderProtocol {
 
 final class DataLoader: DataLoaderProtocol {
     func fetchData(url: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) {
-        guard let requestURL = url.url else {
+        guard url.url != nil else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1001)))
             return
         }

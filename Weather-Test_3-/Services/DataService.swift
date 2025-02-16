@@ -5,15 +5,16 @@ protocol DataServiceProtocol {
 }
 
 final class DataService: DataServiceProtocol {
-    private let apiEndpoint = APIEndpoint()
     private let dataLoader: DataLoaderProtocol
     private let dataDecoder: DataDecoderProtocol
     private let dataMapper: DataMappersProtocol
+    private let apiEndpoint: APIEndpointProtocol
     
-    init(dataLoader: DataLoaderProtocol, dataDecoder: DataDecoderProtocol, dataMapper: DataMappersProtocol) {
+    init(dataLoader: DataLoaderProtocol, dataDecoder: DataDecoderProtocol, dataMapper: DataMappersProtocol, apiEndpoint: APIEndpointProtocol) {
         self.dataLoader = dataLoader
         self.dataDecoder = dataDecoder
         self.dataMapper = dataMapper
+        self.apiEndpoint = apiEndpoint
     }
     
     func fetchCityWeatherList(query: String, completion: @escaping (Result<[CityWeatherModel], Error>) -> Void) {

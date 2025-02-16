@@ -1,12 +1,16 @@
 import Foundation
 
-final class DateFormatterHelper {
-    static let shared = DateFormatterHelper()
-    
+protocol DateFormatterHelperProtocol: AnyObject {
+    func parseDate(from dateString: String) -> Date?
+    func formatToWeekday(from dateString: String) -> String
+    func formatYMD(from date: Date) -> String
+}
+
+final class DateFormatterHelper: DateFormatterHelperProtocol {
     private let inputFormatter: DateFormatter
     private let outputFormatter: DateFormatter
     
-    private init() {
+    init() {
         inputFormatter = DateFormatter()
         inputFormatter.locale = Locale(identifier: "ru_RU")
         inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

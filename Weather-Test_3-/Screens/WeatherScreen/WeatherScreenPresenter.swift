@@ -16,9 +16,10 @@ final class WeatherScreenPresenter: WeatherScreenPresenterProtocol {
     }
 }
 
+// MARK: - Private Methods
 extension WeatherScreenPresenter {
     func CellDataUpdating() {
-        let headerModel = WeatherScreenView.ModelView(
+        let headerModel = WeatherScreenView.HeaderModel(
             name: cityModel.name,
             country: cityModel.country,
             temp: cityModel.temp,

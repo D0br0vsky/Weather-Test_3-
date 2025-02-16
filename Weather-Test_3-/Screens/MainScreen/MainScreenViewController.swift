@@ -6,10 +6,14 @@ protocol MainScreenViewControllerProtocol: AnyObject {
 
 final class MainScreenViewController: UIViewController {
     let presenter: MainScreenPresenter
-    private lazy var customView = MainScreenView(presenter: presenter)
     
-    init(presenter: MainScreenPresenter) {
+    private let videoPlayerManager: VideoPlayerManagerProtocol
+    
+    private lazy var customView = MainScreenView(presenter: presenter, videoPlayerManager: videoPlayerManager)
+    
+    init(presenter: MainScreenPresenter, videoPlayerManager: VideoPlayerManagerProtocol) {
         self.presenter = presenter
+        self.videoPlayerManager = videoPlayerManager
         super.init(nibName: nil, bundle: nil)
     }
     

@@ -1,7 +1,7 @@
 import Foundation
 
 protocol MainScreenPresenterProtocol: AnyObject {
-    func searchUpdate(_ query: String)
+    func updateSearchQuery(_ query: String)
     func didSelectWeather(with cityModel: MainScreenViewCell.Model)
 }
 
@@ -11,20 +11,16 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     weak var view: MainScreenViewControllerProtocol?
     
     private let debouncer = CancellableExecutor(queue: .main)
-    private let dataLoader: DataLoaderProtocol
-    private let dataService: DataServiceProtocol
     private let weatherDataStorage: WeatherDataStorageProtocol
     
     private var searchQuery: String = ""
     
-    init(coordinator: MainScreenCoordinator, dataLoader: DataLoaderProtocol, dataService: DataServiceProtocol, weatherDataStorage: WeatherDataStorageProtocol) {
+    init(coordinator: MainScreenCoordinator, weatherDataStorage: WeatherDataStorageProtocol) {
         self.coordinator = coordinator
-        self.dataLoader = dataLoader
-        self.dataService = dataService
         self.weatherDataStorage = weatherDataStorage
     }
     
-    func searchUpdate(_ query: String) {
+    func updateSearchQuery(_ query: String) {
         searchQuery = query
         
         debouncer.execute(delay: .milliseconds(400)) { [weak self] isCancelled in
@@ -52,6 +48,7 @@ private extension MainScreenPresenter {
                 case .success:
                     self.updateUI()
                 case .failure(let error):
+                        
                     print(error)
                     // потом показать экран с ошибкой поиска
                 }
@@ -60,7 +57,7 @@ private extension MainScreenPresenter {
     }
     
     func updateUI() {
-        let videoFiles = ["previouslyMorning", "day", "morning", "night"]
+        let videoFileNames = ["previouslyMorning", "day", "morning", "night"]
         
         let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
             let firstDay = city.weatherList.first
@@ -73,7 +70,7 @@ private extension MainScreenPresenter {
                 description: firstDay?.description ?? "",
                 tempMin: firstDay?.tempMin ?? "",
                 tempMax: firstDay?.tempMax ?? "",
-                videoFileName: videoFiles[index % videoFiles.count],
+                videoFileName: videoFileNames[index % videoFileNames.count],
                 icon: firstDay?.icon ?? .clearSkyDay,
                 weatherList: city.weatherList
             )

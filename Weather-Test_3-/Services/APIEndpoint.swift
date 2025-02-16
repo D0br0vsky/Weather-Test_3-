@@ -1,6 +1,11 @@
 import Foundation
 
-struct APIEndpoint {
+protocol APIEndpointProtocol {
+    func makeRequestFindCity(cityName: String) -> URLRequest?
+    func makeRequestFindWeather(lat: Double, lon: Double) -> URLRequest?
+}
+
+struct APIEndpoint: APIEndpointProtocol {
     private let baseURL = "https://api.openweathermap.org"
     private var apiKey: String { return Bundle.main.apiKey }
     
@@ -8,7 +13,7 @@ struct APIEndpoint {
         let path = "/geo/1.0/direct"
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "q", value: cityName),
-            URLQueryItem(name: "limit", value: "5"),
+            URLQueryItem(name: "limit", value: "4"),
             URLQueryItem(name: "appid", value: apiKey)
         ]
         return createRequest(path: path, queryItems: queryItems)
@@ -26,6 +31,8 @@ struct APIEndpoint {
         return createRequest(path: path, queryItems: queryItems)
     }
 }
+
+// MARK: - Private Methods
 private extension APIEndpoint {
     private func createRequest(path: String, queryItems: [URLQueryItem]) -> URLRequest? {
         var components = URLComponents(string: baseURL + path)
