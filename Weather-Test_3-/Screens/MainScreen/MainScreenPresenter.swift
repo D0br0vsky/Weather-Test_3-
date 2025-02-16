@@ -52,42 +52,44 @@ private extension MainScreenPresenter {
         
         weatherDataStorage.loadingWeatherData(trimmedQuery) { [weak self] result in
             guard let self = self else { return }
-            switch result {
-            case .success:
-                view?.setState(.content)
-                let weatherData = self.weatherDataStorage.getWeatherData()
-                if weatherData.isEmpty {
-                    view?.setState(.notFound)
-                } else {
-                    updateUI()
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.view?.setState(.content)
+                    let weatherData = self.weatherDataStorage.getWeatherData()
+                    if weatherData.isEmpty {
+                        self.view?.setState(.notFound)
+                    } else {
+                        updateUI()
+                    }
+                case .failure:
+                    self.view?.setState(.error)
                 }
-            case .failure(_):
-                view?.setState(.error)
             }
         }
-    }
-    
-    func updateUI() {
-        let videoFileNames = ["previouslyMorning", "day", "morning", "night"]
         
-        let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
-            let firstDay = city.weatherList.first
+        func updateUI() {
+            let videoFileNames = ["previouslyMorning", "day", "morning", "night"]
             
-            return MainScreenViewCell.Model(
-                name: city.name,
-                country: city.country,
-                dateTime: firstDay?.dateTime ?? "no data",
-                temp: firstDay?.temp ?? "",
-                description: firstDay?.description ?? "",
-                tempMin: firstDay?.tempMin ?? "",
-                tempMax: firstDay?.tempMax ?? "",
-                videoFileName: videoFileNames[index % videoFileNames.count],
-                icon: firstDay?.icon ?? .clearSkyDay,
-                weatherList: city.weatherList
-            )
+            let items = weatherDataStorage.getWeatherData().enumerated().map { index, city in
+                let firstDay = city.weatherList.first
+                
+                return MainScreenViewCell.Model(
+                    name: city.name,
+                    country: city.country,
+                    dateTime: firstDay?.dateTime ?? "no data",
+                    temp: firstDay?.temp ?? "",
+                    description: firstDay?.description ?? "",
+                    tempMin: firstDay?.tempMin ?? "",
+                    tempMax: firstDay?.tempMax ?? "",
+                    videoFileName: videoFileNames[index % videoFileNames.count],
+                    icon: firstDay?.icon ?? .clearSkyDay,
+                    weatherList: city.weatherList
+                )
+            }
+            
+            let viewModel = MainScreenView.Model(items: items)
+            view?.update(model: viewModel)
         }
-        
-        let viewModel = MainScreenView.Model(items: items)
-        view?.update(model: viewModel)
     }
 }
