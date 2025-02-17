@@ -1,7 +1,7 @@
 import Foundation
 
 protocol WeatherScreenPresenterProtocol: AnyObject {
-    
+    func showInformationChosenDay()
 }
 
 final class WeatherScreenPresenter: WeatherScreenPresenterProtocol {
@@ -11,6 +11,11 @@ final class WeatherScreenPresenter: WeatherScreenPresenterProtocol {
     
     init(cityModel: MainScreenViewCell.Model) {
         self.cityModel = cityModel
+    }
+    
+    func showInformationChosenDay() {
+        view?.setState(.notFound)
+        print("In the future, you can make a check by day")
     }
     
     func viewDidLoad() {

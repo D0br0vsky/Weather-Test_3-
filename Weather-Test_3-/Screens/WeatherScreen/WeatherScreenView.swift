@@ -166,6 +166,11 @@ extension WeatherScreenView: UITableViewDelegate {
         cell.backgroundColor = .clear
         cell.isOpaque = false
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presenter.showInformationChosenDay()
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 // MARK: - Setup Subviews and Constraints

@@ -94,10 +94,7 @@ final class MainScreenViewCell: UICollectionViewCell {
         if let cachedURL = VideoCacheManager.shared.cachedURL(for: fileName) {
             createAndPlayVideo(from: cachedURL)
         } else {
-            guard let asset = NSDataAsset(name: fileName) else {
-                print("Asset not found for \(fileName)")
-                return
-            }
+            guard let asset = NSDataAsset(name: fileName) else { return }
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp4")
             
             do {
