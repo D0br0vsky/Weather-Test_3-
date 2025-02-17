@@ -6,8 +6,8 @@ final class WeatherScreenViewCell: UITableViewCell {
     
     struct Model {
         let dateTime: String
-        let tempMin: String
-        let tempMax: String
+        let tempMin: Int
+        let tempMax: Int
         let icon: WeatherIconModels
     }
     

@@ -40,11 +40,11 @@ final class DataMappers: DataMappersProtocol {
             let iconCode = usedEntry.weather.first?.icon ?? ""
             
             return WeatherInfo(
-                temp: "\(currentTemp)°",
+                temp: currentTemp,
                 description: description,
                 dateTime: dateFormatterHelperProtocol.formatToWeekday(from: usedEntry.dateTime),
-                tempMin: "\(dailyMin.roundedInt())°",
-                tempMax: "\(dailyMax.roundedInt())°",
+                tempMin: dailyMin.roundedInt(),
+                tempMax: dailyMax.roundedInt(),
                 icon: WeatherIconModels(rawValue: iconCode) ?? .clearSkyDay
             )
         }

@@ -63,7 +63,7 @@ private extension MainScreenPresenter {
                         updateUI()
                     }
                 case .failure:
-                    self.view?.setState(.error)
+                    self.view?.setState(.notFound)
                 }
             }
         }
@@ -78,10 +78,10 @@ private extension MainScreenPresenter {
                     name: city.name,
                     country: city.country,
                     dateTime: firstDay?.dateTime ?? "no data",
-                    temp: firstDay?.temp ?? "",
+                    temp: firstDay?.temp ?? 0,
                     description: firstDay?.description ?? "",
-                    tempMin: firstDay?.tempMin ?? "",
-                    tempMax: firstDay?.tempMax ?? "",
+                    tempMin: firstDay?.tempMin ?? 0,
+                    tempMax: firstDay?.tempMax ?? 0,
                     videoFileName: videoFileNames[index % videoFileNames.count],
                     icon: firstDay?.icon ?? .clearSkyDay,
                     weatherList: city.weatherList

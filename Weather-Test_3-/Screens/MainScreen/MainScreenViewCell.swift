@@ -14,10 +14,10 @@ final class MainScreenViewCell: UICollectionViewCell {
         let name: String
         let country: String
         let dateTime: String
-        let temp: String
+        let temp: Int
         let description: String
-        let tempMin: String
-        let tempMax: String
+        let tempMin: Int
+        let tempMax: Int
         let videoFileName: String
         let icon: WeatherIconModels
         let weatherList: [WeatherInfo]
@@ -122,10 +122,10 @@ final class MainScreenViewCell: UICollectionViewCell {
         self.model = model
         cityName.text = model.name
         countryName.text = model.country
-        temperature.text = model.temp
+        temperature.text = "\(model.temp)º"
         status.text = model.description
-        tempMin.text = "Min.: \(model.tempMin)"
-        tempMax.text = "Max.: \(model.tempMax)"
+        tempMin.text = "Min.: \(model.tempMin)º"
+        tempMax.text = "Max.: \(model.tempMax)º"
         
         if playerLayer.player == nil || model.videoFileName != self.model?.videoFileName {
             playVideo(named: model.videoFileName)

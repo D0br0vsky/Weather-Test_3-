@@ -10,10 +10,10 @@ final class WeatherScreenView: UIView {
     struct HeaderModel {
         let name: String
         let country: String
-        let temp: String
+        let temp: Int
         let description: String
-        let tempMin: String
-        let tempMax: String
+        let tempMin: Int
+        let tempMax: Int
         let videoFileName: String
     }
     
@@ -125,9 +125,9 @@ final class WeatherScreenView: UIView {
     func updateHeader(modelView: HeaderModel) {
         cityName.text = modelView.name
         countryName.text = modelView.country
-        temperature.text = modelView.temp
+        temperature.text = "\(modelView.temp)º"
         status.text = modelView.description
-        tempMaxMin.text = "Min: \(modelView.tempMin), Max: \(modelView.tempMax)"
+        tempMaxMin.text = "Min: \(modelView.tempMin)º, Max: \(modelView.tempMax)º"
         playVideo(named: modelView.videoFileName)
     }
 

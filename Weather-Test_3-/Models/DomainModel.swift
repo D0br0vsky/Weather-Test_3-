@@ -5,10 +5,10 @@ struct CityWeatherModel {
 }
 
 struct WeatherInfo {
-    let temp: String
+    let temp: Int
     let description: String
     let dateTime: String
-    let tempMin: String
-    let tempMax: String
+    let tempMin: Int
+    let tempMax: Int
     let icon: WeatherIconModels
 }
