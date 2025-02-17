@@ -63,7 +63,6 @@ extension ScreenStateView: ScreenStateViewProtocol {
             isUserInteractionEnabled = false
             bringSubviewToFront(loadingView)
         case .content:
-            isUserInteractionEnabled = true
             isUserInteractionEnabled = false
         }
     }
