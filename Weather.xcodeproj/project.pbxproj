@@ -29,33 +29,20 @@
 		CE7779E02D500820002D951B /* WeatherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CE7779E82D500820002D951B /* Exceptions for "Weather-Test_3-" folder in "Weather" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = CE7779BF2D50081C002D951B /* Weather */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CE7779C22D50081C002D951B /* Weather-Test_3- */ = {
+		CE7779C22D50081C002D951B /* Weather */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CE7779E82D500820002D951B /* Exceptions for "Weather-Test_3-" folder in "Weather" target */,
-			);
-			path = "Weather-Test_3-";
+			path = Weather;
 			sourceTree = "<group>";
 		};
-		CE7779D92D500820002D951B /* Weather-Test_3-Tests */ = {
+		CE7779D92D500820002D951B /* WeatherTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Weather-Test_3-Tests";
+			path = WeatherTests;
 			sourceTree = "<group>";
 		};
-		CE7779E32D500820002D951B /* Weather-Test_3-UITests */ = {
+		CE7779E32D500820002D951B /* WeatherUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Weather-Test_3-UITests";
+			path = WeatherUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -88,9 +75,9 @@
 		CE7779B72D50081C002D951B = {
 			isa = PBXGroup;
 			children = (
-				CE7779C22D50081C002D951B /* Weather-Test_3- */,
-				CE7779D92D500820002D951B /* Weather-Test_3-Tests */,
-				CE7779E32D500820002D951B /* Weather-Test_3-UITests */,
+				CE7779C22D50081C002D951B /* Weather */,
+				CE7779D92D500820002D951B /* WeatherTests */,
+				CE7779E32D500820002D951B /* WeatherUITests */,
 				CE7779C12D50081C002D951B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,7 +109,7 @@
 				CE5CFE8D2D592CE10035ABC8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				CE7779C22D50081C002D951B /* Weather-Test_3- */,
+				CE7779C22D50081C002D951B /* Weather */,
 			);
 			name = Weather;
 			packageProductDependencies = (
@@ -145,7 +132,7 @@
 				CE7779D82D500820002D951B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				CE7779D92D500820002D951B /* Weather-Test_3-Tests */,
+				CE7779D92D500820002D951B /* WeatherTests */,
 			);
 			name = WeatherTests;
 			packageProductDependencies = (
@@ -168,7 +155,7 @@
 				CE7779E22D500820002D951B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				CE7779E32D500820002D951B /* Weather-Test_3-UITests */,
+				CE7779E32D500820002D951B /* WeatherUITests */,
 			);
 			name = WeatherUITests;
 			packageProductDependencies = (
@@ -292,7 +279,7 @@
 /* Begin XCBuildConfiguration section */
 		CE7779EA2D500820002D951B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = CE7779C22D50081C002D951B /* Weather-Test_3- */;
+			baseConfigurationReferenceAnchor = CE7779C22D50081C002D951B /* Weather */;
 			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -322,7 +309,7 @@
 		};
 		CE7779EB2D500820002D951B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = CE7779C22D50081C002D951B /* Weather-Test_3- */;
+			baseConfigurationReferenceAnchor = CE7779C22D50081C002D951B /* Weather */;
 			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
